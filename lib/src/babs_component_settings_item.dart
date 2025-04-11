@@ -15,61 +15,96 @@ class SettingsItem extends StatelessWidget {
   final int? subtitleMaxLine;
   final TextOverflow? overflow;
 
-  SettingsItem(
-      {required this.icons,
-      this.iconStyle,
-      required this.title,
-      this.titleStyle,
-      this.subtitle,
-      this.subtitleStyle,
-      this.trailing,
-      this.onTap,
-      this.titleMaxLine,
-      this.subtitleMaxLine,
-      this.overflow = TextOverflow.ellipsis});
+  SettingsItem({
+    required this.icons,
+    this.iconStyle,
+    required this.title,
+    this.titleStyle,
+    this.subtitle,
+    this.subtitleStyle,
+    this.trailing,
+    this.onTap,
+    this.titleMaxLine,
+    this.subtitleMaxLine,
+    this.overflow = TextOverflow.ellipsis,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
+    return InkWell(
+      onTap: onTap,
       borderRadius: BorderRadius.circular(15),
-      child: ListTile(
-        onTap: onTap,
-        leading: (iconStyle != null && iconStyle!.withBackground!)
-            ? Container(
-                decoration: BoxDecoration(
-                  color: iconStyle!.backgroundColor,
-                  borderRadius: BorderRadius.circular(iconStyle!.borderRadius!),
-                ),
-                padding: EdgeInsets.all(5),
-                child: Icon(
-                  icons,
-                  size: SettingsScreenUtils.settingsGroupIconSize,
-                  color: iconStyle!.iconsColor,
-                ),
-              )
-            : Padding(
-                padding: EdgeInsets.all(5),
-                child: Icon(
-                  icons,
-                  size: SettingsScreenUtils.settingsGroupIconSize,
-                ),
-              ),
-        title: Text(
-          title,
-          style: titleStyle ?? TextStyle(fontWeight: FontWeight.bold),
-          maxLines: titleMaxLine,
-          overflow: titleMaxLine != null ? overflow : null,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(15),
         ),
-        subtitle: (subtitle != null)
-            ? Text(
-                subtitle!,
-                style: subtitleStyle ?? Theme.of(context).textTheme.bodyMedium!,
-                maxLines: subtitleMaxLine,
-                overflow:
-                    subtitleMaxLine != null ? TextOverflow.ellipsis : null,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Leading Icon
+            (iconStyle != null && iconStyle!.withBackground!)
+                ? Container(
+              decoration: BoxDecoration(
+                color: iconStyle!.backgroundColor,
+                borderRadius:
+                BorderRadius.circular(iconStyle!.borderRadius!),
+              ),
+              padding: EdgeInsets.all(5),
+              child: Icon(
+                icons,
+                size: SettingsScreenUtils.settingsGroupIconSize,
+                color: iconStyle!.iconsColor,
+              ),
+            )
+                : Padding(
+              padding: EdgeInsets.all(5),
+              child: Icon(
+                icons,
+                size: SettingsScreenUtils.settingsGroupIconSize,
+              ),
+            ),
+            SizedBox(width: 12),
+
+            // Title & Subtitle
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: titleStyle ??
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    maxLines: titleMaxLine,
+                    overflow: titleMaxLine != null ? overflow : null,
+                  ),
+                  if (subtitle != null)
+                    SizedBox(height: 4),
+                  if (subtitle != null)
+                    Text(
+                      subtitle!,
+                      style: subtitleStyle ??
+                          Theme.of(context).textTheme.bodyMedium,
+                      maxLines: subtitleMaxLine,
+                      overflow: subtitleMaxLine != null ? overflow : null,
+                    ),
+                ],
+              ),
+            ),
+
+            // Trailing Icon
+            if (trailing != null)
+              Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: trailing!,
               )
-            : null,
-        trailing: (trailing != null) ? trailing : Icon(Icons.navigate_next),
+            else
+              Padding(
+                padding: EdgeInsets.only(left: 8),
+                child: Icon(Icons.navigate_next),
+              ),
+          ],
+        ),
       ),
     );
   }
